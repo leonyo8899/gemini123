@@ -36,7 +36,7 @@
 
     <div id="chat-container">
         <div id="messages">
-            <div class="message bot">🎉 模型路径已彻底校准为官方原生标准！在上方填入密钥即可直接开始使用。</div>
+            <div class="message bot">🎉 模型官方正式 ID 已校准！请在上方填入密钥，即可免翻墙畅聊。</div>
         </div>
         <div id="input-area">
             <textarea id="userInput" placeholder="输入你想问 Gemini 的问题..."></textarea>
@@ -75,8 +75,8 @@
             msgDiv.scrollTop = msgDiv.scrollHeight;
 
             try {
-                // 🔥 终极修正：采用 v1beta 路径，并匹配官方目前完全雷打不动的底层标准大版代号 gemini-1.5-flash
-                const targetUrl = `${baseUrl}/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+                // 🔥 终极修正：使用 Google 官方认领的最标准的统一基础模型代号 gemini-1.5-flash-8b
+                const targetUrl = `${baseUrl}/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${apiKey}`;
                 
                 const response = await fetch(targetUrl, {
                     method: 'POST',
