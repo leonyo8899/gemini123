@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的专属 Gemini 客户端</title>
+    <title>我的专属 Gemini 1.5 客户端</title>
     <link rel="stylesheet" href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/bttn.css/0.2.4/bttn.min.css">
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f7f9fb; margin: 0; padding: 20px; display: flex; flex-direction: column; height: 100vh; box-sizing: border-box; }
         #chat-container { flex: 1; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); display: flex; flex-direction: column; overflow: hidden; max-width: 800px; margin: 0 auto; width: 100%; }
         #messages { flex: 1; padding: 20px; overflow-y: auto; border-bottom: 1px solid #eee; }
-        .message { margin-bottom: 15px; padding: 10px 15px; border-radius: 8px; max-width: 80%; line-height: 1.5; }
+        .message { margin-bottom: 15px; padding: 10px 15px; border-radius: 8px; max-width: 80%; line-height: 1.5; white-space: pre-wrap; }
         .user { background: #007aff; color: #fff; align-self: flex-end; margin-left: auto; }
         .bot { background: #e9e9eb; color: #000; align-self: flex-start; }
         #input-area { padding: 15px; display: flex; gap: 10px; background: #fff; }
@@ -36,7 +36,7 @@
 
     <div id="chat-container">
         <div id="messages">
-            <div class="message bot">🎉 恭喜！你的专属免翻墙 Gemini 网页客户端已搭建成功！在上方填入你的 API Key，即可直接在下方开始用中文畅聊。</div>
+            <div class="message bot">🎉 核心接口已成功升级为 Gemini 1.5 Flash！在上方填入你的 API Key，即可直接在下方畅聊。</div>
         </div>
         <div id="input-area">
             <textarea id="userInput" placeholder="输入你想问 Gemini 的问题..."></textarea>
@@ -45,7 +45,6 @@
     </div>
 
     <script>
-        // 自动读取本地保存的本地配置
         document.getElementById('apiKey').value = localStorage.getItem('g_key') || '';
         if(localStorage.getItem('g_url')) document.getElementById('baseUrl').value = localStorage.getItem('g_url');
 
@@ -57,14 +56,12 @@
             let baseUrl = document.getElementById('baseUrl').value.trim();
             const userInput = document.getElementById('userInput').value.trim();
             
-            if (!apiKey) { alert('请先在顶部填入你的 Gemini API Key！'); return; }
+            if (!apiKey) { alert('请先填入你的 Gemini API Key！'); return; }
             if (!userInput) return;
 
-            // 保存配置
             localStorage.setItem('g_key', apiKey);
             localStorage.setItem('g_url', baseUrl);
 
-            // 清理并规范化 URL
             baseUrl = baseUrl.replace(/\/$/, "");
             if (!baseUrl.startsWith('http')) baseUrl = 'https://' + baseUrl;
 
@@ -78,17 +75,25 @@
             msgDiv.scrollTop = msgDiv.scrollHeight;
 
             try {
-                const response = await fetch(`${baseUrl}/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+                // 🔥 关键修正：彻底更换为官方正规的 v1beta / gemini-1.5-flash 终极最新接口
+                const targetUrl = `${baseUrl}/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+                
+                const response = await fetch(targetUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ contents: [{ parts: [{ text: userInput }] }] })
                 });
 
                 const data = await response.json();
-                const reply = data.candidates[0].content.parts[0].text;
-                document.getElementById(botMsgId).innerText = reply;
+                
+                if (data.candidates && data.candidates[0].content.parts[0].text) {
+                    const reply = data.candidates[0].content.parts[0].text;
+                    document.getElementById(botMsgId).innerText = reply;
+                } else {
+                    document.getElementById(botMsgId).innerText = '❌ 服务器返回错误：' + JSON.stringify(data);
+                }
             } catch (err) {
-                document.getElementById(botMsgId).innerText = '❌ 出错了，请检查：\n1. 上方的 API Key 是否填对\n2. 你的 Workers 中转服务状态是否正常';
+                document.getElementById(botMsgId).innerText = '❌ 网络请求失败，请检查：\n1. Key 是否漏字\n2. 切换科学上网节点再试';
                 console.error(err);
             }
             msgDiv.scrollTop = msgDiv.scrollHeight;
