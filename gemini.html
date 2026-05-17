@@ -36,7 +36,7 @@
 
     <div id="chat-container">
         <div id="messages">
-            <div class="message bot">🎉 核心接口已成功升级为 Gemini 1.5 Flash！在上方填入你的 API Key，即可直接在下方畅聊。</div>
+            <div class="message bot">🎉 核心通道已校准！在上方填入你的 API Key，即可免翻墙直接畅聊。</div>
         </div>
         <div id="input-area">
             <textarea id="userInput" placeholder="输入你想问 Gemini 的问题..."></textarea>
@@ -75,8 +75,8 @@
             msgDiv.scrollTop = msgDiv.scrollHeight;
 
             try {
-                // 🔥 关键修正：彻底更换为官方正规的 v1beta / gemini-1.5-flash 终极最新接口
-                const targetUrl = `${baseUrl}/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+                // 🔥 终极修正：将路径切换为 v1 稳定版大版，模型代号使用官方目前完全兼容的底层统一代号 
+                const targetUrl = `${baseUrl}/v1/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
                 
                 const response = await fetch(targetUrl, {
                     method: 'POST',
@@ -90,10 +90,10 @@
                     const reply = data.candidates[0].content.parts[0].text;
                     document.getElementById(botMsgId).innerText = reply;
                 } else {
-                    document.getElementById(botMsgId).innerText = '❌ 服务器返回错误：' + JSON.stringify(data);
+                    document.getElementById(botMsgId).innerText = '❌ Google服务器拒绝请求，详情：' + JSON.stringify(data);
                 }
             } catch (err) {
-                document.getElementById(botMsgId).innerText = '❌ 网络请求失败，请检查：\n1. Key 是否漏字\n2. 切换科学上网节点再试';
+                document.getElementById(botMsgId).innerText = '❌ 请求未能发送，请确保你的 Workers 没有被网络阻断，或者挂上代理重试。';
                 console.error(err);
             }
             msgDiv.scrollTop = msgDiv.scrollHeight;
