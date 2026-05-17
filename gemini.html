@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的专属 Gemini 1.5 客户端</title>
+    <title>我的专属 Gemini 客户端</title>
     <link rel="stylesheet" href="https://lf26-cdn-tos.bytecdntp.com/cdn/expire-1-M/bttn.css/0.2.4/bttn.min.css">
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f7f9fb; margin: 0; padding: 20px; display: flex; flex-direction: column; height: 100vh; box-sizing: border-box; }
@@ -36,7 +36,7 @@
 
     <div id="chat-container">
         <div id="messages">
-            <div class="message bot">🎉 核心通道已校准！在上方填入你的 API Key，即可免翻墙直接畅聊。</div>
+            <div class="message bot">🎉 模型路径已彻底校准为官方原生标准！在上方填入密钥即可直接开始使用。</div>
         </div>
         <div id="input-area">
             <textarea id="userInput" placeholder="输入你想问 Gemini 的问题..."></textarea>
@@ -75,8 +75,8 @@
             msgDiv.scrollTop = msgDiv.scrollHeight;
 
             try {
-                // 🔥 终极修正：将路径切换为 v1 稳定版大版，模型代号使用官方目前完全兼容的底层统一代号 
-                const targetUrl = `${baseUrl}/v1/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
+                // 🔥 终极修正：采用 v1beta 路径，并匹配官方目前完全雷打不动的底层标准大版代号 gemini-1.5-flash
+                const targetUrl = `${baseUrl}/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
                 
                 const response = await fetch(targetUrl, {
                     method: 'POST',
@@ -93,7 +93,7 @@
                     document.getElementById(botMsgId).innerText = '❌ Google服务器拒绝请求，详情：' + JSON.stringify(data);
                 }
             } catch (err) {
-                document.getElementById(botMsgId).innerText = '❌ 请求未能发送，请确保你的 Workers 没有被网络阻断，或者挂上代理重试。';
+                document.getElementById(botMsgId).innerText = '❌ 请求未能发送，请确保你的 Workers 没有被网络阻断。';
                 console.error(err);
             }
             msgDiv.scrollTop = msgDiv.scrollHeight;
